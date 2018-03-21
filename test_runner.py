@@ -1,6 +1,7 @@
 import subprocess
 import time
 import unittest
+import platform
 from functools import partial
 from multiprocessing import Pool
 
@@ -10,6 +11,14 @@ from scripts.create_directory import create_server_log_dir, create_appium_log_di
 from scripts.get_device_info import devices_list
 from scripts.node_json_creator import node_json_create
 from testcases.test import SimpleAndroidTests
+
+
+def kill_process(process_name):
+    system = platform.system()
+    if system == 'Darwin' or system == 'Linux':
+        subprocess.Popen('Killall %s' % process_name, shell=True)
+    elif system == 'Windows':
+        subprocess.Popen('taskkill /F /IM %s.exe /T' % process_name, shell=True)
 
 
 def kill_jar(jar_name):
@@ -53,6 +62,12 @@ def init_appium_server(start_time, dut_list):
     pool.join()
 
 
+def shutdown_servers():
+    kill_jar('selenium')
+    kill_process('node')
+    console_out('Servers shutdown.')
+
+
 def run_case(start_time, device_id):
     suite = unittest.TestSuite()
     suite.addTest(TestInterfaceCase.parametrize(
@@ -90,9 +105,13 @@ if __name__ == '__main__':
             time.sleep(10)
             console_out('Test started')
             runner_pool(create_time, DUT_list)
+            shutdown_servers()
         elif start_input.lower() == "r":
             DUT_list = devices_list()
         elif start_input.lower() == "n":
             break
         else:
             print("Input wrong argument.")
+
+    kill_jar('selenium')
+    kill_process('node')
