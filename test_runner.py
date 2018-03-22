@@ -10,13 +10,13 @@ from scripts.console import console_out
 from scripts.create_directory import create_server_log_dir, create_appium_log_dir, create_node_json_dir, create_temp_dir
 from scripts.get_device_info import devices_list
 from scripts.node_json_creator import node_json_create
-from testcases.test import SimpleAndroidTests
+from testcases.test import CalculatorTest
 
 
 def kill_process(process_name):
     system = platform.system()
     if system == 'Darwin' or system == 'Linux':
-        subprocess.Popen('Killall %s' % process_name, shell=True)
+        subprocess.Popen('killall %s' % process_name, shell=True)
     elif system == 'Windows':
         subprocess.Popen('taskkill /F /IM %s.exe /T' % process_name, shell=True)
 
@@ -71,7 +71,7 @@ def shutdown_servers():
 def run_case(start_time, device_id):
     suite = unittest.TestSuite()
     suite.addTest(TestInterfaceCase.parametrize(
-        testcase_class=SimpleAndroidTests,
+        testcase_class=CalculatorTest,
         create_time=start_time,
         device_id=device_id))
     unittest.TextTestRunner(verbosity=2).run(suite)
@@ -90,7 +90,6 @@ def runner_pool(start_time, duts_list):
 
 if __name__ == '__main__':
     create_time = time.strftime('%Y.%m.%d_%H-%M-%S', time.localtime())
-    kill_jar("selenium")
     DUT_list = devices_list()
     is_ready = False
     while not is_ready:
@@ -99,6 +98,8 @@ if __name__ == '__main__':
         start_input = input(start_hint).strip()
         if start_input.lower() == "y":
             is_ready = True
+            kill_jar("selenium")
+            kill_process('node')
             init_selenium_server(create_time)
             init_appium_server(create_time, DUT_list)
             console_out("All appium server started, please wait 10s for test started.")
