@@ -2,7 +2,7 @@ import json
 import unittest
 
 from appium import webdriver
-from scripts.create_directory import create_node_json_dir
+from libs.create_directory import create_node_json_dir
 
 
 def appium_driver(create_time, device_id):

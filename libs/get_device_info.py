@@ -1,7 +1,7 @@
 import re
 import subprocess
 
-from scripts.console import console_out
+from libs.console import console_out
 
 
 def devices_list():

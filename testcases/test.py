@@ -3,7 +3,7 @@ import time
 
 from selenium.common.exceptions import NoSuchElementException
 
-from scripts.case_builder import TestInterfaceCase
+from libs.case_builder import TestInterfaceCase
 
 
 class CalculatorTest(TestInterfaceCase):

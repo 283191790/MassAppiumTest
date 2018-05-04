@@ -5,11 +5,11 @@ import platform
 from functools import partial
 from multiprocessing import Pool
 
-from scripts.case_builder import TestInterfaceCase
-from scripts.console import console_out
-from scripts.create_directory import create_server_log_dir, create_appium_log_dir, create_node_json_dir, create_temp_dir
-from scripts.get_device_info import devices_list
-from scripts.node_json_creator import node_json_create
+from libs.case_builder import TestInterfaceCase
+from libs.console import console_out
+from libs.create_directory import create_server_log_dir, create_appium_log_dir, create_node_json_dir, create_temp_dir
+from libs.get_device_info import devices_list
+from libs.node_json_creator import node_json_create
 from testcases.test import CalculatorTest
 
 
@@ -24,8 +24,7 @@ def kill_process(process_name):
 def kill_jar(jar_name):
     jar_running = subprocess.Popen("jps -mlv | grep " + jar_name, stdout=subprocess.PIPE, shell=True).stdout.read()
     try:
-        jar_pid = jar_running.split()[0]
-        jar_pid = jar_pid.decode()
+        jar_pid = (jar_running.split()[0]).decode()
         subprocess.Popen("kill " + jar_pid, shell=True)
     except IndexError:
         console_out(jar_name + " is not running.")
